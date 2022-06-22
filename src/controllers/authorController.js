@@ -3,8 +3,13 @@ const authorModel = require('../models/authorModel')
 const createAuthor = async function (req, res) {
 
     try {
-        authordata = req.body
-        finalData = await authorModel.create(authordata);
+        const authordata = req.body
+        
+        if(!authordata){
+            res.status(401).send({msg: "please fill the data in right format"})
+        }
+
+        const finalData = await authorModel.create(authordata);
         res.send({ msg: finalData })
     }
     catch(error) {
@@ -12,6 +17,8 @@ const createAuthor = async function (req, res) {
         res.status(500).send({ msg: error.message })
 
     }
+    
 }
+
 
 module.exports.createAuthor = createAuthor
