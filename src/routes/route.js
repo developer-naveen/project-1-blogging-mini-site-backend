@@ -2,32 +2,27 @@ const express = require('express');
 const router = express.Router();
 const autherController = require('../controllers/authorController');
 const blogController = require('../controllers/blogController');
-
-
-router.get('/test-me', function (req, res) {
-    res.send('My first ever api!')
-});
-
+const mw = require('../middleware/auth')
 
 
 //API for Create New Auther
 router.post('/authors', autherController.createAuthor )
 
 //API for Create New Blog
-// router.post('/blogs', blogController.createBlog )
+router.post('/blogs',mw.authentication, blogController.createBlog )
 
 //API for Get the blog 
-router.get('/blogs', blogController.getBlogs)
+router.get('/blogs',mw.authentication, blogController.getBlogs)
 
 
-
-router.put('/blogs/:blogId', blogController.updateBlog)
-
-
-router.delete('/blogs/:blogId', blogController.deleteBlogByPath)
+router.put('/blogs/:blogId',mw.authentication, blogController.updateBlog)
 
 
-router.delete('/blogs', blogController.deleteBlogByQuery)
+router.delete('/blogs/:blogId', mw.authentication,blogController.deleteBlogByPath)
+
+
+router.delete('/blogs',mw.authentication, blogController.deleteBlogByQuery)
+
 
 router.post('/loginAuthor', autherController.authorLogin)
 

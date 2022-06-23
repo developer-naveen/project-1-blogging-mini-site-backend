@@ -1,20 +1,46 @@
 const jwt = require('jsonwebtoken');
 
-const authentication = function(req,res,next){
 
-    const token = req.headers["x-Auth-Token"]
+/******************************************authentication*********************************************/
 
-    if(!token) { token = req.headers["x-auth-token"] }
+const authentication = function (req, res, next) {
+    try {
+        const token = req.headers["x-auth-key"]
 
-    if(!token){
-        return res.status(407).send({status: false, msg: "token not found"})
+        // console.log(token);
+
+        // if(!token) { token = req.headers["x-Auth-Key"] }
+
+        if (!token) {
+            return res.status(407).send({ status: false, msg: "token not found" })
+        }
+        const decodedToken = jwt.verify(token, "my-first-blog-project")
+        if (!decodedToken) {
+            return res.status(401).send({ status: false, msg: "authentication failed" })
+        }
     }
-    const decodedToken = jwt.verify(token, "my-first-blog-project" )
-     if(!decodedToken){
-        return res.
-     }
-
-
-
-
+    catch (error) {
+        console.log("this is the error ", error.message);
+        return res.status(500).send({ status: false, msg: error.message })
+    }
+    next()
 }
+
+/******************************************authorization*********************************************/
+
+
+const authorization = function (req, res, next) {
+
+
+
+
+
+    next()
+}
+
+
+
+
+
+module.exports.authentication = authentication
+module.exports.authorization = authorization

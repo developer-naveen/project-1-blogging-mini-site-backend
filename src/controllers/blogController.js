@@ -1,17 +1,18 @@
 const blogModel = require('../models/blogModel')
 const authorModel = require('../models/authorModel')
-const { modelNames } = require('mongoose')
+// const { modelNames } = require('mongoose')
 
 const createBlog = async function (req, res) {
 
   try {
     const blogData = req.body
+    console.log(blogData);
     
     let { title, body, authorId, category } = blogData;
 
-    if (Object.keys(data).length == 0) {
-        return res.status(400).send({ status: false, msg: "Please request data to be created" })
-    }
+    // if (Object.keys(data).length == 0) {
+    //     return res.status(400).send({ status: false, msg: "Please request data to be created" })
+    // }
     if (!title) {
         return res.status(400).send({ status: false, msg: "Please enter title" })
     }
@@ -59,18 +60,17 @@ const getBlogs = async function (req, res) {
   try {
 
     const filter = req.query;
+    const allBlog = await blogModel.find({$and: [filter,{isDeleted:false},{isPublished:true}]})
 
-    const allBlog = await blogModel.find({ $and: [filter, { isDeleted: false }, { isPublished: true }] })
-
-    // console.log(allBlog.lenght);
-    if (!allBlog[0]) {
-      return res.status(404).send({ status: false, msg: "Sorry! Dude No Blog Found" })
-
+    if (!(allBlog[0])) {
+      return res.send({ status: false, msg: "Sorry! Dude No Blog Found" })
     }
     return res.status(200).send({ status: true, data: allBlog })
     
   } catch (error) {
     console.log("this is the error ", error.message)
+    console.log("this is the error ", error)
+    
     return res.status(500).send({status:false, msg: error.message })
 
   }
@@ -89,7 +89,7 @@ const updateBlog = async function (req, res) {
       return res.status(400).send({status: false, msg : "Please Enter the Blog Id"})
     }
 
-    if(getId.blogId !== 24 ){
+    if(getId.blogId.length !== 24 ){
       return res.status(400).send({status: false, msg : "please enter valid length of blog Id (24)"})
     }
     const updateBlog = await blogModel.findOneAndUpdate(
@@ -112,9 +112,10 @@ const deleteBlogByPath = async function (req, res) {
   try {
 
     const getId = req.params;
+console.log(getId);
+    const deletedblog = await blogModel.findOneAndUpdate({ _id: getId.blogId}, { $set: { isDeleted: true } }, { new: true })
 
-    const deletedblog = await blogModel.findOneAndUpdate({ _id: getId.blogId }, { $set: { isDeleted: true } }, { new: true })
-
+    console.log(deletedblog);
     if (!deletedblog) {
       res.status(400).send({ status: false, msg: "No such as blog found" })
     }
@@ -128,21 +129,22 @@ const deleteBlogByPath = async function (req, res) {
 const deleteBlogByQuery = async function (req, res) {
   try {
     let data = req.query
+
     console.log(data);
-    const deleteByQuery = await blogModel.updateMany(
+    const deleteByQuery = await blogModel.findOneAndUpdate(
       { $and: [data, { isDeleted: false }] },
       { $set: { isDeleted: true, deletedAt: new Date() } },
       { new: true }
     )
     if (!deleteByQuery)
-      return res.status(400).send({ status: false, msg: "The Blog is already Deleted" })
+      return res.status(400).send({ status: false, msg: "The Blog is already Deleted", data: deleteByQuery})
   } catch (error) {
     res.status(500).send({ msg: error.message });
   }
 }
 
 
-module.exports.creatBelog = createBlog
+module.exports.createBlog = createBlog
 module.exports.getBlogs = getBlogs
 module.exports.deleteBlogByPath = deleteBlogByPath
 module.exports.deleteBlogByQuery = deleteBlogByQuery

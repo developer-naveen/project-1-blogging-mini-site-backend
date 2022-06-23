@@ -86,7 +86,7 @@ const authorLogin = async function (req,res){
     }, "my-first-blog-project"
     )
 
-    res.setHeader("x-api-key", token)
+    res.setHeader("x-auth-key", token)
     return res.send({status:true, token: token})
 
 }
