@@ -39,4 +39,4 @@ const blogsSchema = new mongoose.Schema( {
     }},
          { timestamps: true });
 
-module.exports = mongoose.model('blog', blogsSchema)
+2
