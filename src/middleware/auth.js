@@ -8,7 +8,7 @@ const blogModel = require('../models/blogModel')
 
 const authentication = function (req, res, next) {
     try {
-        const token = req.headers["x-auth-key"]
+        const token = req.headers["x-key-key"]
 
 
         // if(!token) { token = req.headers["x-Auth-Key"] }
@@ -49,9 +49,6 @@ const authorizationParams = async function (req, res, next) {
          
          }
  
-
-        
-
         next()
     } catch (err) {
         res.status(500).send({ msg: "Error", error: err.message })

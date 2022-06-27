@@ -141,7 +141,7 @@ const authorLogin = async function (req, res) {
     console.log(username);
     const findAuthor = await authorModel.findOne({ email: username, password: password })
     if (!findAuthor) {
-        return res.status(404).send({ status: false, msg: "Make sure your email & Password Correct. sorry No Author found Or Your Credentials are not Matched, Please Create Author first" })
+        return res.status(404).send({ status: false, data: "Make sure your email & Password Correct. sorry No Author found Or Your Credentials are not Matched, Please Create Author first" })
     }
 
 
@@ -152,8 +152,8 @@ const authorLogin = async function (req, res) {
     }, "my-first-blog-project"
     )
 
-    res.setHeader("x-auth-key", token)
-    return res.send({ status: true, token: token })
+    res.setHeader("x-api-key", token)
+    return res.status(201).send({ status: true, token: token })
 
 }
 

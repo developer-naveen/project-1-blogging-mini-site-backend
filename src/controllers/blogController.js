@@ -20,7 +20,7 @@ const createBlog = async function (req, res) {
 
     if (!title && !body && !authorId && !tags && !category && !subcategory) {
 
-      return res.send({ status: false, msg: "All the feild are required" })
+      return res.status(400).send({ status: false, msg: "All the feild are required" })
 
     } else {
 
@@ -80,7 +80,7 @@ const createBlog = async function (req, res) {
 
         if (tags[i].length == 0) {
 
-          return res.send({ status: false, msg: "tags feild cannot be empty" })
+          return res.status(400).send({ status: false, msg: "tags feild cannot be empty" })
         }
       }
 
@@ -128,7 +128,7 @@ const createBlog = async function (req, res) {
 
         if (subcategory[i].length == 0) {
 
-          return res.send({ status: false, msg: "subcategory feild cannot be empty" })
+          return res.status(400).send({ status: false, msg: "subcategory feild cannot be empty" })
         }
       }
 
@@ -164,7 +164,7 @@ const createBlog = async function (req, res) {
     }
 
     finalData = await blogModel.create(blogData);
-    res.status(201).send({ msg: finalData })
+    res.status(201).send({status:true, data: finalData })
   }
   catch (error) {
     console.log("this is the error ", error.message)
@@ -190,7 +190,7 @@ const getBlogs = async function (req, res) {
 
       if (filter.authorId.length !== 24) {
 
-        return res.send({ status: false, msg: "Make sure your Author Id is correct or not??" })
+        return res.status(400).send({ status: false, msg: "Make sure your Author Id is correct or not??" })
 
       }
     }
@@ -199,7 +199,7 @@ const getBlogs = async function (req, res) {
 
     if (!allBlog[0]) {
 
-      return res.send({ status: false, msg: "Sorry! Dude No Blog Found" })
+      return res.status(400).send({ status: false, msg: "Sorry! Dude No Blog Found" })
     }
 
     return res.status(200).send({ status: true, data: allBlog })
@@ -239,7 +239,7 @@ const updateBlog = async function (req, res) {
 
     if (getId.blogId.length !== 24) {
 
-      return res.send({ status: false, msg: "Make sure your Blog Id is correct or not??" })
+      return res.status(400).send({ status: false, msg: "Make sure your Blog Id is correct or not??" })
 
     }
 
@@ -284,7 +284,7 @@ const updateBlog = async function (req, res) {
 
         if (tags[i].length == 0) {
 
-          return res.send({ status: false, msg: "tags feild cannot be empty" })
+          return res.status(400).send({ status: false, msg: "tags feild cannot be empty" })
         }
       }
 
@@ -324,7 +324,7 @@ const updateBlog = async function (req, res) {
 
         if (subcategory[i].length == 0) {
 
-          return res.send({ status: false, msg: "subcategory feild cannot be empty" })
+          return res.status(400).send({ status: false, msg: "subcategory feild cannot be empty" })
         }
       }
 
@@ -367,7 +367,7 @@ const updateBlog = async function (req, res) {
       { new: true }
     );
 
-    return res.send({ msg: updateBlog }); //updated data 
+    return res.status(201).send({ status:true, data: updateBlog }); //updated data 
   } catch (error) {
     console.log("this is an error", error.message);
     res.status(500).send({ msg: error.message });
@@ -386,7 +386,7 @@ const deleteBlogByPath = async function (req, res) {
 
     if (getId.blogId.length !== 24) {
 
-      return res.send({ status: false, msg: "Make sure your Blog Id is correct or not??" })
+      return res.status(400).send({ status: false, msg: "Make sure your Blog Id is correct or not??" })
 
     }
 
@@ -429,7 +429,7 @@ const deleteBlogByQuery = async function (req, res) {
     )
 
     if (!deleteByQuery)
-      return res.status(400).send({ status: false, msg: "No blog found" })
+      return res.status(404).send({ status: false, msg: "No blog found" })
 
   } catch (error) {
     res.status(500).send({ msg: error.message });
