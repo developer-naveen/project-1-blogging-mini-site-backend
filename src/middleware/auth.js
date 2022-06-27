@@ -31,38 +31,6 @@ const authentication = function (req, res, next) {
 /******************************************authorization*********************************************/
 
 
-const authorizationBody = async function (req, res, next) {
-
-    try {
-        let token = req.headers["x-auth-key"]
-
-        let decodedToken = jwt.verify(token, "my-first-blog-project")
-
-
-        let bodyPresent = req.body
-
-        let authorToBeModified = bodyPresent.authorId
-
-        let authorLogin = decodedToken.userId
-
-        if (authorToBeModified != authorLogin) {
-
-            console.log(authorLogin);
-            console.log(authorToBeModified);
-
-            return res.status(403).send({ status: false, msg: "Sorry! You are not authorized to do this." })
-        }
-
-        next()
-    } catch (err) {
-        res.status(500).send({ msg: "Error", error: err.message })
-    }
-}
-
-
-/******************************************authorization*********************************************/
-
-
 const authorizationParams = async function (req, res, next) {
 
     try {
@@ -72,11 +40,11 @@ const authorizationParams = async function (req, res, next) {
 
         const blogId=req.params.blogId
 
-        const blogByblogId=await blogModel.findById(blogId)
+        const findAuthor=await blogModel.findById(blogId)
   
          const tokenData = jwt.verify(token,"my-first-blog-project")
      
-         if(blogByblogId.authorId!=tokenData.authorId){
+         if(findAuthor.authorId.toString() !== tokenData.authorId){
              res.status(403).send({status:false,msg:"Sorry! You are not authorized to do this."})
          
          }
@@ -90,6 +58,8 @@ const authorizationParams = async function (req, res, next) {
     }
 }
 
+
+/******************************************authorization*********************************************/
 
 const authorizationQuery = async function (req, res, next) {
 
