@@ -1,4 +1,7 @@
 const jwt = require('jsonwebtoken');
+const authorModel = require('../models/authorModel')
+const blogModel = require('../models/blogModel')
+
 
 
 /******************************************authentication*********************************************/
@@ -7,7 +10,6 @@ const authentication = function (req, res, next) {
     try {
         const token = req.headers["x-auth-key"]
 
-        // console.log(token);
 
         // if(!token) { token = req.headers["x-Auth-Key"] }
 
@@ -29,18 +31,206 @@ const authentication = function (req, res, next) {
 /******************************************authorization*********************************************/
 
 
-const authorization = function (req, res, next) {
+const authorizationBody = async function (req, res, next) {
+
+    try {
+        let token = req.headers["x-auth-key"]
+
+        let decodedToken = jwt.verify(token, "my-first-blog-project")
 
 
+        let bodyPresent = req.body
+
+        let authorToBeModified = bodyPresent.authorId
+
+        let authorLogin = decodedToken.userId
+
+        if (authorToBeModified != authorLogin) {
+
+            console.log(authorLogin);
+            console.log(authorToBeModified);
+
+            return res.status(403).send({ status: false, msg: "Sorry! You are not authorized to do this." })
+        }
+
+        next()
+    } catch (err) {
+        res.status(500).send({ msg: "Error", error: err.message })
+    }
+}
 
 
+/******************************************authorization*********************************************/
 
-    next()
+
+const authorizationParams = async function (req, res, next) {
+
+    try {
+        
+        
+        let token = req.headers["x-auth-key"]
+
+        const blogId=req.params.blogId
+
+        const blogByblogId=await blogModel.findById(blogId)
+  
+         const tokenData = jwt.verify(token,"my-first-blog-project")
+     
+         if(blogByblogId.authorId!=tokenData.authorId){
+             res.status(403).send({status:false,msg:"Sorry! You are not authorized to do this."})
+         
+         }
+ 
+
+        
+
+        next()
+    } catch (err) {
+        res.status(500).send({ msg: "Error", error: err.message })
+    }
+}
+
+
+const authorizationQuery = async function (req, res, next) {
+
+    try {
+        let token = req.headers["x-auth-key"]
+
+        let decodedToken = jwt.verify(token, "my-first-blog-project")
+
+
+        let authorToBeModified = req.query.userId
+
+        let authorLogin = decodedToken.userId
+
+        if (authorToBeModified != authorLogin) {
+            return res.status(403).send({ status: false, msg: "Sorry! You are not authorized to do this." })
+        }
+
+        next()
+    } catch (err) {
+        res.status(500).send({ msg: "Error", error: err.message })
+    }
 }
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports.authentication = authentication
-module.exports.authorization = authorization
+
+module.exports.authorizationQuery = authorizationQuery
+module.exports.authorizationParams= authorizationParams
+
+
+
+
+
+
+
+
+
+
+
+//optional || 
+
+
+// const authorizationBody = async function (req, res, next) {
+
+//     try {
+//         let token = req.headers["x-auth-key"]
+
+//         let decodedToken = jwt.verify(token, "my-first-blog-project")
+
+
+//         let bodyPresent = req.body
+
+//         let authorToBeModified = bodyPresent.authorId
+
+//         let authorLogin = decodedToken.userId
+
+//         if (authorToBeModified != authorLogin) {
+
+//             console.log(authorLogin);
+//             console.log(authorToBeModified);
+
+//             return res.status(403).send({ status: false, msg: "Sorry! You are not authorized to do this." })
+//         }
+
+//         next()
+//     } catch (err) {
+//         res.status(500).send({ msg: "Error", error: err.message })
+//     }
+// }
+
+// module.exports.authorizationBody = authorizationBody
+
+
+
+
+
+
+// const authorization = async function (req, res, next) {
+
+
+//     try {
+//         let token = req.headers["x-auth-key"]
+
+//         let decodedToken = jwt.verify(token, "my-first-blog-project")
+
+//         let bodyPresent = req.body
+
+
+
+//         if (req.query) {
+
+//             let authorToBeModified = req.query.userId
+
+//             let authorLogin = decodedToken.userId
+
+//             if (authorToBeModified != authorLogin) {
+//                 return res.status(403).send({ status: false, msg: "Sorry! You are not authorized to do this." })
+//             }
+
+//         }
+
+
+
+
+//         if (req.params) {
+
+//             const checkAuthor = await blogModel.find({ _id: req.params.blogId }).select({ authorId: 1 })
+
+
+//             let authorToBeModified = checkAuthor.authorId
+
+//             let authorLogin = decodedToken.userId
+
+//             if (authorToBeModified != authorLogin) {
+//                 return res.status(403).send({ status: false, msg: "Sorry! You are not authorized to do this." })
+//             }
+//         }
+
+
+
+
+
+//         next()
+//     }
+
+//     catch (err) {
+//         res.status(500).send({ msg: "Error", error: err.message })
+//     }
+// }

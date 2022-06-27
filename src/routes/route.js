@@ -15,16 +15,16 @@ router.post('/blogs',mw.authentication, blogController.createBlog )
 router.get('/blogs',mw.authentication, blogController.getBlogs)
 
 
-router.put('/blogs/:blogId',mw.authentication, blogController.updateBlog)
+router.put('/blogs/:blogId',mw.authentication,mw.authorizationParams, blogController.updateBlog)
 
 
-router.delete('/blogs/:blogId', mw.authentication,blogController.deleteBlogByPath)
+router.delete('/blogs/:blogId', mw.authentication, mw.authorizationParams , blogController.deleteBlogByPath)
 
 
-router.delete('/blogs',mw.authentication, blogController.deleteBlogByQuery)
+router.delete('/blogs/',mw.authentication, mw.authorizationQuery, blogController.deleteBlogByQuery)
 
 
-router.post('/loginAuthor', autherController.authorLogin)
+router.post('/login', autherController.authorLogin)
 
 
 
@@ -34,7 +34,7 @@ router.post('/loginAuthor', autherController.authorLogin)
 router.all("/**", function (req, res) {
     res.status(404).send({
         status: false,
-        msg: "The api you request is not available"
+        msg: "Make Sure Your Endpoint is Correct or Not!"
     })
 })
 
