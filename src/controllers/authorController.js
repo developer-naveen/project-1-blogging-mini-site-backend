@@ -120,11 +120,11 @@ const authorLogin = async function (req, res) {
     const password = req.body.password
 
     if (!username && !password) {
-        return res.send({ status: false, msg: "Please Enter the Email & password" })
+        return res.status(400).send({ status: false, msg: "Please Enter the Email & password" })
     } else {
 
         if (!username) {
-            return res.send({ status: false, msg: "Please Enter the Email" })
+            return res.status(400).send({ status: false, msg: "Please Enter the Email" })
         }
 
         let checkEmail = validator.validate(username)
@@ -133,7 +133,7 @@ const authorLogin = async function (req, res) {
         }
 
         if (!password) {
-            return res.send({ status: false, msg: "Please Enter the Password" })
+            return resstatus(400).send({ status: false, msg: "Please Enter the Password" })
         }
 
     }
@@ -141,7 +141,7 @@ const authorLogin = async function (req, res) {
     console.log(username);
     const findAuthor = await authorModel.findOne({ email: username, password: password })
     if (!findAuthor) {
-        return res.status(404).send({ status: false, data: "Make sure your email & Password Correct. sorry No Author found Or Your Credentials are not Matched, Please Create Author first" })
+        return res.status(401).send({ status: false, data: "Make sure your email & Password Correct. sorry No Author found Or Your Credentials are not Matched, Please Create Author first" })
     }
 
 
@@ -153,7 +153,7 @@ const authorLogin = async function (req, res) {
     )
 
     res.setHeader("x-api-key", token)
-    return res.status(201).send({ status: true, token: token })
+    return res.status(201).send({ status: true, data: token })
 
 }
 
