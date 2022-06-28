@@ -96,7 +96,7 @@ const createAuthor = async function (req, res) {
         }
      
         const finalData = await authorModel.create(authordata);
-        return res.status(201).send({ msg: finalData })
+        return res.status(201).send({ status: true, data: finalData })
     }
     
     catch (error) {

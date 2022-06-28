@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const monngodb_url="mongodb+srv://naveen-developer:rash47rash2021@naveen-developer.eja8d.mongodb.net/project-blog";
 
 mongoose.connect(monngodb_url, {useNewUrlParser: true,useUnifiedTopology: true}).then(()=>{
-    console.log("MongoDB is connected");
+    console.log("Hi! MongoDB is connected Now ");
 }).catch((error)=>{
     console.log("Sorry! MongoDB is not connected");
     console.log(error);

@@ -8,13 +8,13 @@ const blogModel = require('../models/blogModel')
 
 const authentication = function (req, res, next) {
     try {
-        const token = req.headers["x-key-key"]
+        const token = req.headers["x-api-key"]
 
 
         // if(!token) { token = req.headers["x-Auth-Key"] }
 
         if (!token) {
-            return res.status(407).send({ status: false, msg: "token not found" })
+            return res.status(404).send({ status: false, msg: "token not found" })
         }
         const decodedToken = jwt.verify(token, "my-first-blog-project")
         if (!decodedToken) {
@@ -35,16 +35,22 @@ const authorizationParams = async function (req, res, next) {
 
     try {
         
-        
-        let token = req.headers["x-auth-key"]
+        let token = req.headers["x-api-key"]
+
+        console.log(token);
 
         const blogId=req.params.blogId
 
-        const findAuthor=await blogModel.findById(blogId)
+        const findAuthor= await blogModel.findById(blogId)
+      
+      
+
   
          const tokenData = jwt.verify(token,"my-first-blog-project")
+
+         console.log(tokenData);
      
-         if(findAuthor.authorId.toString() !== tokenData.authorId){
+         if(findAuthor.authorId.toString() !== tokenData.userId){
              res.status(403).send({status:false,msg:"Sorry! You are not authorized to do this."})
          
          }
@@ -61,16 +67,19 @@ const authorizationParams = async function (req, res, next) {
 const authorizationQuery = async function (req, res, next) {
 
     try {
-        let token = req.headers["x-auth-key"]
+        let token = req.headers["x-api-key"]
 
         let decodedToken = jwt.verify(token, "my-first-blog-project")
+         
 
+        let authorToBeModified = req.query.authorId
 
-        let authorToBeModified = req.query.userId
-
+        console.log(authorToBeModified);
         let authorLogin = decodedToken.userId
+        console.log(authorLogin);
 
-        if (authorToBeModified != authorLogin) {
+
+        if (authorToBeModified.toString() !== authorLogin) {
             return res.status(403).send({ status: false, msg: "Sorry! You are not authorized to do this." })
         }
 

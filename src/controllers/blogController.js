@@ -367,7 +367,7 @@ const updateBlog = async function (req, res) {
       { new: true }
     );
 
-    return res.status(201).send({ status:true, data: updateBlog }); //updated data 
+    return res.status(200).send({ status:true, message: "your blog has beed updated", data: updateBlog  }); //updated data 
   } catch (error) {
     console.log("this is an error", error.message);
     res.status(500).send({ msg: error.message });
@@ -401,7 +401,7 @@ const deleteBlogByPath = async function (req, res) {
     if (!deletedblog) {
       res.status(400).send({ status: false, msg: "No such as blog found" })
     }
-    res.status(200).send({ msg: "Done: this blog is deleted" })
+    res.status(200).send({status: true,  data: "Done: this blog is deleted" })
 
   } catch (error) {
     res.status(500).send({ msg: error.message });
@@ -419,11 +419,8 @@ const deleteBlogByQuery = async function (req, res) {
     }
 
 
-
-
-    
     const deleteByQuery = await blogModel.findOneAndUpdate(
-      { _id: data, isDeleted: false },
+      { data, isDeleted: false },
       { $set: { isDeleted: true, deletedAt: new Date() } },
       { new: true }
     )
@@ -431,6 +428,8 @@ const deleteBlogByQuery = async function (req, res) {
     if (!deleteByQuery)
       return res.status(404).send({ status: false, msg: "No blog found" })
 
+
+      return res.status(200).send({ status: true, msg: "successfully deleted"      })
   } catch (error) {
     res.status(500).send({ msg: error.message });
   }
